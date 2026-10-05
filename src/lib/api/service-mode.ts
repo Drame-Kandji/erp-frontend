@@ -1,0 +1,1 @@
+export const useMockServices = import.meta.env.VITE_DATA_SOURCE === 'mock'

@@ -1,0 +1,2 @@
+export type EmployeeStatus = 'active' | 'on_leave' | 'inactive'
+export type Employee = { id: string; employeeNumber: string; name: string; organization: string; site: string; department: string; position: string; status: EmployeeStatus; hiredAt: string }

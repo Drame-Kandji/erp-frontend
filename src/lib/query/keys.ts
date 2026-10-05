@@ -1,0 +1,2 @@
+export const organizationKeys = { all: ['organizations'] as const, list: () => [...organizationKeys.all, 'list'] as const }
+export const siteKeys = { all: ['sites'] as const, list: () => [...siteKeys.all, 'list'] as const }

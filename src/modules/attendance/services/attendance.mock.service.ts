@@ -1,0 +1,3 @@
+export type AttendanceRecord = { id: string; employee: string; site: string; checkIn: string; checkOut: string | null; duration: string; status: 'present' | 'late' | 'absent' }
+const records: AttendanceRecord[] = [{ id: 'att-1', employee: 'Fatou Ndiaye', site: 'Site Dakar', checkIn: '08:03', checkOut: null, duration: '06h42', status: 'present' }, { id: 'att-2', employee: 'Ousmane Ba', site: 'Carrière de Thiès', checkIn: '07:48', checkOut: '16:10', duration: '08h22', status: 'present' }, { id: 'att-3', employee: 'Awa Seck', site: 'Site Dakar', checkIn: '09:12', checkOut: null, duration: '05h33', status: 'late' }]
+export const attendanceMockService = { async list() { return records } }
