@@ -25,4 +25,13 @@ export const sitesApiService = {
     return response.data 
   },
 	async remove(id: string) { await apiClient.delete(`/sites/${id}/`) },
+	async listAll(params: Omit<SiteListParams, 'page'> = {}) {
+		const all: Site[] = []
+		for (let page = 1; ; page += 1) {
+			const data = await this.list({ ...params, page })
+			all.push(...data.results)
+			if (!data.next) break
+		}
+		return all
+	},
 }

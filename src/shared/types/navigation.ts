@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react'
 import type { UserRole } from './auth'
 
-export type AppRoute = 'dashboard' | 'organizations' | 'sites' | 'users' | 'employees' | 'contracts' | 'attendance' | 'timesheets' | 'profile' | 'settings'
+export type AppRoute = 'dashboard' | 'organizations' | 'sites' | 'departments' | 'users' | 'roles' | 'audit' | 'employees' | 'contracts' | 'attendance' | 'timesheets' | 'profile' | 'settings'
 
 export type NavigationItem = {
   label: string

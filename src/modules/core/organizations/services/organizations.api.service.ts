@@ -27,4 +27,13 @@ export const organizationsApiService = {
 	async remove(id: string) {
 		await apiClient.delete(`/organizations/${id}/`)
 	},
+	async listAll(params: Omit<OrganizationListParams, 'page'> = {}) {
+		const all: Organization[] = []
+		for (let page = 1; ; page += 1) {
+			const data = await this.list({ ...params, page })
+			all.push(...data.results)
+			if (!data.next) break
+		}
+		return all
+	},
 }
