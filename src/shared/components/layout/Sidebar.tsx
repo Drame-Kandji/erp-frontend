@@ -1,4 +1,4 @@
-import { ChevronDown, CircleHelp, LogOut } from "lucide-react";
+import {  CircleHelp, LogOut } from "lucide-react";
 import { navigation } from "../../constants/navigation";
 import type { AppRoute } from "../../types/navigation";
 import type { UserRole } from "../../types/auth";
@@ -33,14 +33,14 @@ export function Sidebar({
           ×
         </button>
       </div>
-      <div className="workspace-switcher">
+      {/* <div className="workspace-switcher">
         <span className="workspace-dot" />
         <span>
           <small>Organisation active</small>
           <strong>NOLI CORE</strong>
         </span>
         <ChevronDown size={15} />
-      </div>
+      </div> */}
       <nav className="sidebar-nav">
         {navigation.map((section) => {
           const items = section.items.filter((item) =>
@@ -79,7 +79,7 @@ export function Sidebar({
           <LogOut size={17} />
           Se déconnecter
         </button>
-        <div className="api-status">
+        {/* <div className="api-status">
           <span className="pulse" />
           <span>
             <b>
@@ -93,7 +93,7 @@ export function Sidebar({
                 : "Connecté au backend Django"}
             </small>
           </span>
-        </div>
+        </div> */}
       </div>
     </aside>
   );

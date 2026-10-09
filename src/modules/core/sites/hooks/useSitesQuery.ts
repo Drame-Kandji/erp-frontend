@@ -11,6 +11,7 @@ export const siteKeys = {
   all: ['sites'] as const, 
   lists: () => [...siteKeys.all, 'list'] as const, 
   list: (filters: SiteFilters) => [...siteKeys.lists(), filters] as const, 
+  allList: () => [...siteKeys.all, 'list-all'] as const, 
   details: () => [...siteKeys.all, 'detail'] as const, detail: (id: string) => [...siteKeys.details(), id] as const 
 }
 export function useSitesQuery(filters: SiteFilters) { 
@@ -18,6 +19,13 @@ export function useSitesQuery(filters: SiteFilters) {
     queryKey: siteKeys.list(filters), 
     queryFn: () => sitesService.list(filters) 
   }) 
+}
+export function useSitesLookupQuery(organization?: string) {
+  return useQuery({
+    queryKey: [...siteKeys.allList(), organization] as const,
+    queryFn: () => sitesService.listAll(organization ? { organization } : {}),
+    staleTime: 60_000,
+  })
 }
 export function useSiteQuery(id: string | undefined) { 
   return useQuery({ 

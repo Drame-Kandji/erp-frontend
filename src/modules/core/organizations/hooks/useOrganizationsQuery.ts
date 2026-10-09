@@ -6,6 +6,7 @@ export const organizationKeys = {
   all: ['organizations'] as const, 
   lists: () => [...organizationKeys.all, 'list'] as const, 
   list: (page: number) => [...organizationKeys.lists(), { page }] as const, 
+  allList: () => [...organizationKeys.all, 'list-all'] as const, 
   details: () => [...organizationKeys.all, 'detail'] as const, 
   detail: (id: string) => [...organizationKeys.details(), id] as const 
 }
@@ -15,6 +16,14 @@ export function useOrganizationsQuery(page: number) {
     queryKey: organizationKeys.list(page), 
     queryFn: () => organizationsService.list({ page }) 
   }) 
+}
+
+export function useOrganizationsLookupQuery() {
+  return useQuery({
+    queryKey: organizationKeys.allList(),
+    queryFn: () => organizationsService.listAll(),
+    staleTime: 60_000,
+  })
 }
 
 export function useOrganizationQuery(id: string | undefined) { 
