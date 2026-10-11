@@ -14,10 +14,11 @@ export const siteKeys = {
   allList: () => [...siteKeys.all, 'list-all'] as const, 
   details: () => [...siteKeys.all, 'detail'] as const, detail: (id: string) => [...siteKeys.details(), id] as const 
 }
-export function useSitesQuery(filters: SiteFilters) { 
+export function useSitesQuery(filters: SiteFilters, enabled = true) { 
   return useQuery({ 
     queryKey: siteKeys.list(filters), 
-    queryFn: () => sitesService.list(filters) 
+    queryFn: () => sitesService.list(filters), 
+    enabled 
   }) 
 }
 export function useSitesLookupQuery(organization?: string) {

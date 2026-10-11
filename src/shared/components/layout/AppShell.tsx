@@ -18,13 +18,14 @@ export function AppShell() {
       .flatMap((section) => section.items)
       .find((item) => item.route === route)?.label ?? "Tableau de bord";
   const logout = () => {
-    signOut();
+    void signOut();
     navigate("/login", { replace: true });
   };
   return (
     <div className="app-shell">
       <Sidebar
         role={user.role}
+        organizationName={user.organizationName}
         activeRoute={route}
         onNavigate={(nextRoute) => navigate(`/${nextRoute}`)}
         onSignOut={logout}
@@ -44,6 +45,7 @@ export function AppShell() {
           title={title}
           onMenu={() => setSidebarOpen(true)}
           onSignOut={logout}
+          onNavigate={(nextRoute) => navigate(`/${nextRoute}`)}
         />
         <div className="content">
           <Outlet />

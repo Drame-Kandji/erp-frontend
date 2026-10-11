@@ -1,4 +1,4 @@
-import { Eye } from "lucide-react";
+import { Eye, Search, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataTable } from "../../../../shared/components/DataTable";
@@ -52,14 +52,27 @@ export function AuditLogsPage() {
           </div>
         </div>
         <div className="resource-filters">
-          <label>
+          <label className="filter-search">
             Recherche
-            <input
-              value={search}
-              placeholder="Ressource ou type"
-              onChange={(event) => setSearch(event.target.value)}
-              onBlur={() => setPage(1)}
-            />
+            <span className="filter-search-box">
+              <Search size={14} />
+              <input
+                type="search"
+                value={search}
+                placeholder="Ressource ou type…"
+                onChange={(event) => changeFilter(setSearch, event.target.value)}
+              />
+              {search && (
+                <button
+                  type="button"
+                  className="filter-search-clear"
+                  aria-label="Effacer la recherche"
+                  onClick={() => changeFilter(setSearch, "")}
+                >
+                  <X size={13} />
+                </button>
+              )}
+            </span>
           </label>
           <label>
             Action

@@ -18,10 +18,11 @@ export const departmentKeys = {
   detail: (id: string) => [...departmentKeys.details(), id] as const,
 }
 
-export function useDepartmentsQuery(filters: DepartmentFilters) {
+export function useDepartmentsQuery(filters: DepartmentFilters, enabled = true) {
   return useQuery({
     queryKey: departmentKeys.list(filters),
     queryFn: () => departmentsService.list(filters),
+    enabled,
   })
 }
 

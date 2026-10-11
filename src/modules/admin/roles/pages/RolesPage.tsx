@@ -1,4 +1,4 @@
-import { ChevronDown, Eye, Pencil, Plus, Search, Trash2 } from 'lucide-react'
+import { ChevronDown, Eye, Pencil, Plus, Search, Trash2, X } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DataTable } from '../../../../shared/components/DataTable'
@@ -26,6 +26,10 @@ export function RolesPage() {
   };
   const changeOrganization = (value: string) => {
     setOrganization(value);
+    setPage(1);
+  };
+  const changeName = (value: string) => {
+    setName(value);
     setPage(1);
   };
 
@@ -72,17 +76,27 @@ export function RolesPage() {
               ))}
             </select>
           </label>
-          <label>
+          <label className="filter-search">
             Nom
-            <input
-              type="search"
-              value={name}
-              onChange={(event) => {
-                setName(event.target.value);
-                setPage(1);
-              }}
-              placeholder="Rechercher un rôle…"
-            />
+            <span className="filter-search-box">
+              <Search size={14} />
+              <input
+                type="search"
+                value={name}
+                placeholder="Rechercher un rôle…"
+                onChange={(event) => changeName(event.target.value)}
+              />
+              {name && (
+                <button
+                  type="button"
+                  className="filter-search-clear"
+                  aria-label="Effacer la recherche"
+                  onClick={() => changeName("")}
+                >
+                  <X size={13} />
+                </button>
+              )}
+            </span>
           </label>
         </div>
         <DataTable

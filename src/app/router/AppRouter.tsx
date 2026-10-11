@@ -1,11 +1,13 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { CircleHelp, FileText, Settings2 } from "lucide-react";
 import { AppShell } from "../../shared/components/layout/AppShell";
 import { LoginPage } from "../../modules/auth/pages/LoginPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { DashboardPage } from "../../modules/dashboard/pages/DashboardPage";
 import { OrganizationsPage } from "../../modules/core/organizations/pages/OrganizationsPage";
 import { SitesPage } from "../../modules/core/sites/pages/SitesPage";
-import { ModulePlaceholderPage } from "../../shared/components/ModulePlaceholderPage";
+import { ComingSoonPage } from "../../shared/components/ComingSoonPage";
+import { ProfilePage } from "../../modules/profile/pages/ProfilePage";
 import { EmployeesPage } from "../../modules/hr/pages/EmployeesPage";
 import { AttendancePage } from "../../modules/attendance/pages/AttendancePage";
 import { UsersPage } from "../../modules/admin/users/pages/UsersPage";
@@ -28,22 +30,19 @@ import { DepartmentDetailPage } from "../../modules/core/departments/pages/Depar
 import { DepartmentEditPage } from "../../modules/core/departments/pages/DepartmentEditPage";
 import { AuditLogsPage } from "../../modules/admin/audit/pages/AuditLogsPage";
 import { AuditDetailPage } from "../../modules/admin/audit/pages/AuditDetailPage";
+import { LandingPage } from "../../modules/landing/pages/LandingPage";
 
 export function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route element={<ProtectedRoute />}>
           <Route element={<AppShell />}>
-            <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
-            <Route element={<ProtectedRoute roles={["ADMIN"]} />}>
+            <Route element={<ProtectedRoute roles={["SUPERADMIN", "ADMIN"]} />}>
               <Route path="organizations" element={<OrganizationsPage />} />
-              <Route
-                path="organizations/new"
-                element={<OrganizationCreatePage />}
-              />
               <Route
                 path="organizations/:id/edit"
                 element={<OrganizationEditPage />}
@@ -64,10 +63,18 @@ export function AppRouter() {
               />
               <Route path="departments/:id" element={<DepartmentDetailPage />} />
             </Route>
-            <Route element={<ProtectedRoute roles={["ADMIN", "RH"]} />}>
+            <Route element={<ProtectedRoute roles={["SUPERADMIN"]} />}>
+              <Route
+                path="organizations/new"
+                element={<OrganizationCreatePage />}
+              />
+            </Route>
+            <Route
+              element={<ProtectedRoute roles={["SUPERADMIN", "ADMIN", "RH"]} />}
+            >
               <Route path="employees" element={<EmployeesPage />} />
             </Route>
-            <Route element={<ProtectedRoute roles={["ADMIN"]} />}>
+            <Route element={<ProtectedRoute roles={["SUPERADMIN", "ADMIN"]} />}>
               <Route path="users" element={<UsersPage />} />
               <Route path="users/new" element={<UserCreatePage />} />
               <Route path="users/:id/edit" element={<UserEditPage />} />
@@ -84,9 +91,28 @@ export function AppRouter() {
               <Route
                 path="contracts"
                 element={
-                  <ModulePlaceholderPage
-                    title="Contrats & documents"
+                  <ComingSoonPage
                     label="RESSOURCES HUMAINES"
+                    title="Contrats & documents"
+                    description="Centralisez les contrats, avenants et pièces administratives."
+                    icon={FileText}
+                    features={[
+                      {
+                        title: "Génération de contrats",
+                        description:
+                          "Modèles de contrats CDI, CDD et chantier pré-remplis.",
+                      },
+                      {
+                        title: "Coffre-fort documentaire",
+                        description:
+                          "Stockage sécurisé et versionné des pièces du dossier.",
+                      },
+                      {
+                        title: "Alertes d'échéances",
+                        description:
+                          "Notifications sur les fins de contrat et visites médicales.",
+                      },
+                    ]}
                   />
                 }
               />
@@ -94,19 +120,61 @@ export function AppRouter() {
             <Route element={<ProtectedRoute roles={["RH", "EMPLOYEE"]} />}>
               <Route path="timesheets" element={<AttendancePage timesheet />} />
             </Route>
+            <Route path="profile" element={<ProfilePage />} />
             <Route
-              path="profile"
+              path="settings"
               element={
-                <ModulePlaceholderPage
-                  title="Mon profil"
-                  label="ESPACE PERSONNEL"
+                <ComingSoonPage
+                  label="SYSTÈME"
+                  title="Paramètres"
+                  description="Configurez les préférences globales de votre organisation."
+                  icon={Settings2}
+                  features={[
+                    {
+                      title: "Identité visuelle",
+                      description:
+                        "Logo, couleurs et modèles de documents de l'entreprise.",
+                    },
+                    {
+                      title: "Paramètres régionaux",
+                      description:
+                        "Fuseau horaire, devise, langue et formats de date.",
+                    },
+                    {
+                      title: "Notifications & intégrations",
+                      description:
+                        "Webhooks, e-mails automatiques et exports planifiés.",
+                    },
+                  ]}
                 />
               }
             />
             <Route
-              path="settings"
+              path="help"
               element={
-                <ModulePlaceholderPage title="Paramètres" label="SYSTÈME" />
+                <ComingSoonPage
+                  label="ASSISTANCE"
+                  title="Centre d'aide"
+                  description="Ressources, guides et support pour tirer le meilleur de NOLI CORE."
+                  icon={CircleHelp}
+                  features={[
+                    {
+                      title: "Guides par module",
+                      description:
+                        "Pas-à-pas illustrés pour chaque fonctionnalité.",
+                    },
+                    {
+                      title: "Foire aux questions",
+                      description:
+                        "Réponses rapides aux questions les plus fréquentes.",
+                    },
+                    {
+                      title: "Contacter le support",
+                      description:
+                        "Ouvrez un ticket et suivez son traitement en direct.",
+                    },
+                  ]}
+                />
               }
             />
           </Route>

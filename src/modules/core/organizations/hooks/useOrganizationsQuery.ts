@@ -11,10 +11,11 @@ export const organizationKeys = {
   detail: (id: string) => [...organizationKeys.details(), id] as const 
 }
 
-export function useOrganizationsQuery(page: number) { 
+export function useOrganizationsQuery(page: number, enabled = true) { 
   return useQuery({ 
     queryKey: organizationKeys.list(page), 
-    queryFn: () => organizationsService.list({ page }) 
+    queryFn: () => organizationsService.list({ page }), 
+    enabled 
   }) 
 }
 
