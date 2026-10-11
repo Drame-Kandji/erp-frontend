@@ -11,10 +11,11 @@ export const auditKeys = {
   detail: (id: string) => [...auditKeys.details(), id] as const,
 }
 
-export function useAuditLogsQuery(filters: AuditLogListParams) {
+export function useAuditLogsQuery(filters: AuditLogListParams, enabled = true) {
   return useQuery({
     queryKey: auditKeys.list(filters),
     queryFn: () => auditService.list(filters),
+    enabled,
   })
 }
 

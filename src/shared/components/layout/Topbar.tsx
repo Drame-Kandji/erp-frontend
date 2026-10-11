@@ -1,17 +1,26 @@
-import { Bell, ChevronDown, Menu, Search } from "lucide-react";
+import { useRef } from "react";
+import { Bell, ChevronDown, Menu, Search, UserRound } from "lucide-react";
 import type { AuthUser } from "../../types/auth";
+import type { AppRoute } from "../../types/navigation";
 
 export function Topbar({
   user,
   title,
   onMenu,
   onSignOut,
+  onNavigate,
 }: {
   user: AuthUser;
   title: string;
   onMenu: () => void;
   onSignOut: () => void;
+  onNavigate: (route: AppRoute) => void;
 }) {
+  const menuRef = useRef<HTMLDetailsElement>(null);
+  const go = (route: AppRoute) => {
+    menuRef.current?.removeAttribute("open");
+    onNavigate(route);
+  };
   return (
     <header className="topbar">
       <button
@@ -37,7 +46,7 @@ export function Topbar({
           <Bell size={18} />
           <i />
         </button>
-        <details className="profile-wrap">
+        <details className="profile-wrap" ref={menuRef}>
           <summary className="profile-button">
             <span className="avatar">
               {user.name
@@ -47,12 +56,15 @@ export function Topbar({
             </span>
             <span className="profile-copy">
               <b>{user.name}</b>
-              <small>{user.role}</small>
+              <small>{user.roleLabel}</small>
             </span>
             <ChevronDown size={15} />
           </summary>
           <div className="role-menu">
             <small>{user.email}</small>
+            <button onClick={() => go("profile")}>
+              <UserRound size={15} /> Mon profil
+            </button>
             <button onClick={onSignOut}>Se déconnecter</button>
           </div>
         </details>

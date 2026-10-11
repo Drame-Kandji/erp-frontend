@@ -20,10 +20,11 @@ export const userKeys = {
   detail: (id: string) => [...userKeys.details(), id] as const,
 }
 
-export function useUsersQuery(filters: UserFilters) {
+export function useUsersQuery(filters: UserFilters, enabled = true) {
   return useQuery({
     queryKey: userKeys.list(filters),
     queryFn: () => usersService.list(filters),
+    enabled,
   })
 }
 

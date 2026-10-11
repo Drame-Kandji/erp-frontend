@@ -1,10 +1,11 @@
-import {  CircleHelp, LogOut } from "lucide-react";
+import { Building2, CircleHelp, LogOut } from "lucide-react";
 import { navigation } from "../../constants/navigation";
 import type { AppRoute } from "../../types/navigation";
 import type { UserRole } from "../../types/auth";
 
 export function Sidebar({
   role,
+  organizationName,
   activeRoute,
   onNavigate,
   onSignOut,
@@ -12,6 +13,7 @@ export function Sidebar({
   onClose,
 }: {
   role: UserRole;
+  organizationName: string;
   activeRoute: AppRoute;
   onNavigate: (route: AppRoute) => void;
   onSignOut: () => void;
@@ -33,14 +35,14 @@ export function Sidebar({
           ×
         </button>
       </div>
-      {/* <div className="workspace-switcher">
+      <div className="workspace-switcher">
         <span className="workspace-dot" />
         <span>
           <small>Organisation active</small>
-          <strong>NOLI CORE</strong>
+          <strong>{organizationName}</strong>
         </span>
-        <ChevronDown size={15} />
-      </div> */}
+        <Building2 size={15} />
+      </div>
       <nav className="sidebar-nav">
         {navigation.map((section) => {
           const items = section.items.filter((item) =>
@@ -71,7 +73,13 @@ export function Sidebar({
         })}
       </nav>
       <div className="sidebar-footer">
-        <button className="nav-item">
+        <button
+          className={`nav-item ${activeRoute === "help" ? "nav-item--active" : ""}`}
+          onClick={() => {
+            onNavigate("help");
+            onClose();
+          }}
+        >
           <CircleHelp size={17} />
           Centre d'aide
         </button>

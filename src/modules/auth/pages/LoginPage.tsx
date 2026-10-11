@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Eye, EyeOff, LockKeyhole, LogIn, ShieldCheck } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { getApiErrorMessage } from "../../../lib/api/client";
 import { demoAccounts } from "../../../shared/constants/demo-accounts";
 import { useAuthStore } from "../../../shared/stores/auth.store";
+import { authService } from "../services/auth.service";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -10,19 +12,25 @@ export function LoginPage() {
   const [email, setEmail] = useState("admin@nolicore.local");
   const [password, setPassword] = useState("admin123");
   const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const submit = (event: React.FormEvent) => {
+
+  const submit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const account = demoAccounts.find(
-      (item) => item.email === email && item.password === password,
-    );
-    if (!account) {
-      setError("Identifiants de démonstration invalides.");
-      return;
+    if (submitting) return;
+    setError("");
+    setSubmitting(true);
+    try {
+      const result = await authService.login({ email: email.trim(), password });
+      await signIn(result);
+      navigate("/dashboard", { replace: true });
+    } catch (submitError) {
+      setError(getApiErrorMessage(submitError));
+    } finally {
+      setSubmitting(false);
     }
-    signIn(account);
-    navigate("/dashboard", { replace: true });
   };
+
   return (
     <main className="auth-page">
       <section className="auth-visual">
@@ -46,6 +54,9 @@ export function LoginPage() {
       </section>
       <section className="auth-form-side">
         <form className="auth-form" onSubmit={submit}>
+          <Link to="/" className="auth-back">
+            ← Retour à l'accueil
+          </Link>
           <span className="eyebrow">ESPACE DE TRAVAIL</span>
           <h2>Bienvenue dans NOLI CORE</h2>
           <p className="auth-intro">
@@ -58,6 +69,7 @@ export function LoginPage() {
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               autoComplete="email"
+              required
             />
           </label>
           <label>
@@ -68,6 +80,7 @@ export function LoginPage() {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 autoComplete="current-password"
+                required
               />
               <button
                 type="button"
@@ -83,17 +96,40 @@ export function LoginPage() {
             </div>
           </label>
           {error && <p className="form-error">{error}</p>}
-          <button className="primary-button auth-submit" type="submit">
+          <button
+            className="primary-button auth-submit"
+            type="submit"
+            disabled={submitting}
+          >
             <LogIn size={17} />
-            Se connecter
+            {submitting ? "Connexion en cours…" : "Se connecter"}
           </button>
           <div className="demo-hint">
             <LockKeyhole size={15} />
             <span>
               <b>Comptes de démonstration</b>
               <small>
-                ADMIN, RH et EMPLOYEE sont disponibles sans base de données.
+                Cliquez sur un compte pour remplir le formulaire.
               </small>
+              <span className="demo-accounts">
+                {demoAccounts.map((account) => (
+                  <button
+                    type="button"
+                    key={account.email}
+                    className="demo-account"
+                    onClick={() => {
+                      setEmail(account.email);
+                      setPassword(account.password);
+                      setError("");
+                    }}
+                  >
+                    <strong>{account.email}</strong>
+                    <em>
+                      {account.password} · {account.roleLabel}
+                    </em>
+                  </button>
+                ))}
+              </span>
             </span>
           </div>
         </form>

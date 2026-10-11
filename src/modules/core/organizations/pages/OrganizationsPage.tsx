@@ -2,6 +2,8 @@ import { ChevronDown, Eye, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataTable } from "../../../../shared/components/DataTable";
+import { can } from "../../../../shared/auth/rbac";
+import { useAuthStore } from "../../../../shared/stores/auth.store";
 import {
   useDeleteOrganizationMutation,
   useOrganizationsQuery,
@@ -10,6 +12,9 @@ import {
 export function OrganizationsPage() {
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
+  const user = useAuthStore((state) => state.user);
+  const canCreate = user ? can(user.role, "organization.create") : false;
+  const canDelete = user ? can(user.role, "organization.delete") : false;
   const query = useOrganizationsQuery(page);
   const deletion = useDeleteOrganizationMutation();
   const organizations = query.data?.results ?? [];
@@ -24,8 +29,8 @@ export function OrganizationsPage() {
       <PageHeading
         title="Organisations"
         description="Gérez les entités rattachées à votre environnement NOLI CORE."
-        action="Ajouter une organisation"
-        onAction={() => navigate("/organizations/new")}
+        action={canCreate ? "Ajouter une organisation" : undefined}
+        onAction={canCreate ? () => navigate("/organizations/new") : undefined}
       />
       <section className="panel resource-panel">
         <div className="panel-heading">
@@ -89,14 +94,16 @@ export function OrganizationsPage() {
                 >
                   <Pencil size={15} />
                 </button>
-                <button
-                  className="row-action row-action--danger"
-                  aria-label={`Supprimer ${organization.name}`}
-                  onClick={() => remove(organization.id, organization.name)}
-                  disabled={deletion.isPending}
-                >
-                  <Trash2 size={15} />
-                </button>
+                {canDelete && (
+                  <button
+                    className="row-action row-action--danger"
+                    aria-label={`Supprimer ${organization.name}`}
+                    onClick={() => remove(organization.id, organization.name)}
+                    disabled={deletion.isPending}
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                )}
               </div>
             );
           }}
@@ -135,8 +142,8 @@ function PageHeading({
 }: {
   title: string;
   description: string;
-  action: string;
-  onAction: () => void;
+  action?: string;
+  onAction?: () => void;
 }) {
   return (
     <div className="page-heading">
@@ -145,10 +152,12 @@ function PageHeading({
         <h1>{title}</h1>
         <p>{description}</p>
       </div>
-      <button className="primary-button" onClick={onAction}>
-        <Plus size={17} />
-        {action}
-      </button>
+      {action && onAction && (
+        <button className="primary-button" onClick={onAction}>
+          <Plus size={17} />
+          {action}
+        </button>
+      )}
     </div>
   );
 }

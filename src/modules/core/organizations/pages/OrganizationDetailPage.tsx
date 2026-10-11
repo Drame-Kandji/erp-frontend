@@ -1,5 +1,7 @@
 import { ArrowLeft, Edit3, Trash2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { can } from "../../../../shared/auth/rbac";
+import { useAuthStore } from "../../../../shared/stores/auth.store";
 import {
   useDeleteOrganizationMutation,
   useOrganizationQuery,
@@ -8,6 +10,8 @@ import {
 export function OrganizationDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const user = useAuthStore((state) => state.user);
+  const canDelete = user ? can(user.role, "organization.delete") : false;
   const query = useOrganizationQuery(id);
   const deletion = useDeleteOrganizationMutation();
   if (query.isLoading)
@@ -58,14 +62,16 @@ export function OrganizationDetailPage() {
             <Edit3 size={16} />
             Modifier
           </button>
-          <button
-            className="danger-button"
-            onClick={remove}
-            disabled={deletion.isPending}
-          >
-            <Trash2 size={16} />
-            Supprimer
-          </button>
+          {canDelete && (
+            <button
+              className="danger-button"
+              onClick={remove}
+              disabled={deletion.isPending}
+            >
+              <Trash2 size={16} />
+              Supprimer
+            </button>
+          )}
         </div>
       </div>
       <div className="detail-grid">
